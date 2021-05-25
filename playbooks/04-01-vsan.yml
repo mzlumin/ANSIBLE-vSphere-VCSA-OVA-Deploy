@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+    
+    - name: Disable vSphere HA
+      community.vmware.vmware_cluster_ha:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter_name: '{{ datacenter_name }}'
+        cluster_name: "{{ cluster_name_compute }}"
+        enable_ha: False
+      register: cl_result
+      delegate_to: localhost
+
+
+    - name: Enable vSAN and claim storage automatically
+      community.vmware.vmware_cluster_vsan:
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        validate_certs: no
+        datacenter_name: "{{ datacenter_name }}"
+        cluster_name: "{{ cluster_name_compute }}"
+        enable_vsan: True
+        #ignore_errors: true
+        vsan_auto_claim_storage: True
+        advanced_options:
+          automatic_rebalance: True
+      delegate_to: localhost
+
+
+
+    - name: Enable vSphere HA
+      community.vmware.vmware_cluster_ha:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter_name: '{{ datacenter_name }}'
+        cluster_name: "{{ cluster_name_compute }}"
+        enable_ha: True
+      register: cl_result
+      delegate_to: localhost

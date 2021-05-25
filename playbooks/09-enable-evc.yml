@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Enable EVC Mode
+      community.vmware.vmware_evc_mode:
+        validate_certs: false
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: '{{ vcenter_password }}'
+        datacenter_name: "{{ datacenter_name }}"
+        cluster_name: "{{ cluster_name_compute }}"
+        evc_mode: "intel-westmere"
+        state: present
+      delegate_to: localhost
+      register: enable_evc

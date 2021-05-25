@@ -2,23 +2,25 @@
 
 
 esxi_username: 'root'
-esxi_ip_address: '172.31.100.10'
-esxi_infrastructure_fqdn: 'srv-esxi-01.megasp.net'
-esxi_compute_01_fqdn: 'srv-esxi-02.megasp.net'
-esxi_compute_02_fqdn: 'srv-esxi-03.megasp.net'
+esxi_ip_address: '10.0.0.200'
+esxi_infrastructure_fqdn: 'srv-esxi-01.megasp.net' # 10.0.10.35
+esxi_compute_01_fqdn: 'srv-esxi-02.megasp.net' # 10.0.10.36
+esxi_compute_02_fqdn: 'srv-esxi-03.megasp.net' # 10.0.10.37
+esxi_compute_03_fqdn: 'srv-esxi-04.megasp.net' # 10.0.10.38
 vcenter_username: 'administrator@megasp.net'
-vcenter_virtual_machine_name: 'SRV-VCENTER-01'
+vcenter_virtual_machine_name: 'SRV-VCENTER-01' # 10.0.10.34
 vcenter_hostname: 'srv-vcenter-01'
-vcenter_net_ip_address: '172.31.100.5'
+vcenter_net_ip_address: '10.0.10.34'
 vcenter_net_prefix: '24'
-vcenter_net_gateway: '172.31.100.1'
-vcenter_dns_servers: '172.31.100.20'
+vcenter_net_gateway: '10.0.10.253'
+vcenter_dns_servers: '10.0.10.253'
 domain: 'megasp.net'
 searchpath: ""
 vcsa_size: 'tiny'
-vcsa_ova_file: '/home/nmichel/lab-images/VMware-vCenter-Server-Appliance-7.0.0.10300-16189094_OVF10.ova'
-datastore: 'Synology-NFS-Datastore'
-esxi_network: 'VM Network'
+vcsa_ova_file: '/home/mzulmin/lab-images/VMware-vCenter-Server-Appliance-7.0.2.00100-17920168_OVF10.ova'
+vsan_wittness_ova_file: '/home/mzulmin/lab-images/VMware-VirtualSAN-Witness-7.0.0-15843807.ova'
+datastore: 'SAMSUNG_980'
+esxi_network: 'VCsa-Test'
 datacenter_name: 'ATX-01'
 cluster_name_edge: 'Management-Edge'
 cluster_name_compute: 'Compute'
@@ -28,3 +30,34 @@ vm_folder_name_infrastructure: 'DC-INFRASTRUCTURE'
 vm_folder_name_nsx_infrastructure: 'NSX-INFRASTRUCTURE'
 vm_folder_name_tenant_01: 'COMPUTE-TENANT-01'
 vm_folder_name_tenant_02: 'COMPUTE-TENANT-02'
+dvSwitch_name: 'dvSwitch-MAIN'
+
+
+# Tags and categories - rely on: 
+#                       vSphere Automation SDK
+#                       jmespath :                    pip install jmespath
+vsphere_category_name: 'tanzu'
+vsphere_category_description: 'Ansible auto created'
+vsphere_tag_name: 'tanzu'
+vsphere_tag_description: 'Ansible auto created'
+vsphere_assign_tag_object_name: 'vsanDatastore'
+vsphere_assign_tag_object_type: 'Datastore'
+
+
+# Storage Policy
+vsphere_storage_policy_name: 'Tanzu-TKG-Policy'
+vsphere_storage_policy_description: 'Tanzu Storage Policy'
+vsphere_storage_policy_tag_category: '{{ vsphere_category_name }}'
+vsphere_storage_policy_tag_name: '{{ vsphere_tag_name }}'
+vsphere_storage_policy_tag_affinity: ''
+
+
+# Content Library
+content_library_library_name: 'Tanzu-TKG-Library'
+content_library_library_description: 'Ansible Auto Created Library'
+content_library_datastore_name: '{{ vsphere_assign_tag_object_name }}' 
+content_library_subscription_url: 'https://wp-content.vmware.com/v2/latest/lib.json'
+content_library_ssl_thumbprint: 'BA:C6:4E:D9:AD:D4:53:B5:86:5A:5D:70:36:CF:89:93:D1:6C:F9:63' # echo | openssl s_client -connect wp-content.vmware.com:443 |& openssl x509 -fingerprint -noout
+
+
+

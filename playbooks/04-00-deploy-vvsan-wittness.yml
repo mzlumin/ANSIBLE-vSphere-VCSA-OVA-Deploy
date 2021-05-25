@@ -1,0 +1,39 @@
+#
+# NOT USED! #
+#
+---
+- hosts: localhost
+  name: Deploy the VCSA to an ESXi Host
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+    - community.vmware.vmware_deploy_ovf:
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        datacenter: '{{ datacenter_name }}'
+        name: "ansible-witness" # Virtual Machine name in ESXI, not FQDN
+        ovf: "{{ vsan_wittness_ova_file }}"
+        wait_for_ip_address: false
+        validate_certs: no
+        inject_ovf_env: true
+        datastore: "Datastore"
+        networks: "{u'VM Network':u'VM Network'}"
+        properties:
+          configuration: "tiny" # vCenter t-shirt size: tiny,small,medium,large, or infrastructure
+          #guestinfo.cis.appliance.net.addr.family: "ipv4" # ipv4 or ipv6        
+          guestinfo.passwd: "{{ vcenter_password }}"         
+          guestinfo.vsannetwork: "Secondary"
+          guestinfo.ipaddress0: "10.0.10.38"
+          guestinfo.netmask0: "255.255.255.0"
+          guestinfo.gateway0: "{{ vcenter_net_gateway }}"
+          guestinfo.dnsDomain: "{{ domain }}"
+          guestinfo.hostname: "ansible-witness"
+          guestinfo.dns: "{{ vcenter_dns_servers }}"
+          guestinfo.ntp: "0.at.pool.ntp.org"
+          guestinfo.ipaddress1: "10.0.10.39"
+          guestinfo.netmask1: "255.255.255.0"
+          guestinfo.gateway1: "{{ vcenter_net_gateway }}"
+
+      delegate_to: localhost

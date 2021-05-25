@@ -1,0 +1,34 @@
+
+
+
+    - name: Run command for SSL Fingerprint
+      ansible.builtin.shell: 
+        command: "echo | openssl s_client -connect wp-content.vmware.com:443 |& openssl x509 -fingerprint -noout"
+
+
+    - name: Run command for SSL Fingerprint
+      ansible.builtin.shell: 
+        cmd: "echo | /usr/bin/openssl s_client -connect wp-content.vmware.com:443 > a.txt"
+
+    - name: Run command for SSL Fingerprint2
+      ansible.builtin.shell: 
+        cmd: "/usr/bin/openssl x509 -fingerprint -noout -in a.txt"
+      register: output
+
+    - debug: msg={{ output.stdout }}
+
+    - set_fact:
+        fingerprint: "{{ item.fingerprint }}"
+      loop: "{{ output.stdout|json_query(query) }}"
+      vars:
+#        query: "[?category_name==`vSANDirectStorage`]"
+        query: "[?`SHA`]"
+#        query: "[?stdout_lines==`SHA Fingerprint=`]"
+    - debug: var=fingerprint
+
+
+    - name: Run command for SSL Fingerprint2
+      ansible.builtin.shell: 
+        cmd: "/usr/bin/openssl x509 -fingerprint -noout -in a" 
+
+

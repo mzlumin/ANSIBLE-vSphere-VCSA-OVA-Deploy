@@ -15,6 +15,10 @@
     - name: "vsphere7_license"
       prompt: "What is the License for vSphere7? "
       private: yes
+    - name: "vsphere7_tgk_license"
+      prompt: "What is the License for TGK? "
+      private: yes
+
   vars_files: answerfile.yml
 
   tasks:
@@ -24,10 +28,25 @@
         vcenter_password: "{{ vcenter_password }}"
         vcenter7_license: "{{ vcenter7_license }}"
         vsphere7_license: "{{ vsphere7_license }}"
+        vsphere7_license: "{{ vsphere7_tgk_license }}"       
 
 
-- import_playbook: playbooks/01-deploy-vcsa.yml
-- import_playbook: playbooks/02-basic-config-vcsa.yml
-- import_playbook: playbooks/03-add-hosts.yml
-- import_playbook: playbooks/04-storage.yml
+#- import_playbook: playbooks/01-deploy-vcsa.yml
+#- import_playbook: playbooks/02-basic-config-vcsa.yml
+#- import_playbook: playbooks/03-add-hosts.yml
+#- import_playbook: playbooks/04-00-deploy-vvsan-wittness.yml # CURRENTLY NOT USED!
+#- import_playbook: playbooks/04-storage.yml
+#- import_playbook: playbooks/99-add-networking.yml
+#- import_playbook: playbooks/06-add-hosts-to-dvs.yml
+#- import_playbook: playbooks/07-add-vkernel-vmotion-vsan-to-dvs.yml
+#- import_playbook: playbooks/04-01-vsan.yml
+#- import_playbook: playbooks/08-change-mtu-vmk0.yaml # CURRENTLY NOT USED!
+#- import_playbook: playbooks/09-enable-evc.yml
+#- import_playbook: playbooks/10-create-datastore-tag.yml
+#- import_playbook: playbooks/11-create-tkg-storage-policy.yml
+#- import_playbook: playbooks/12-create-subscribed-content-library.yml
+#- import_playbook: playbooks/13-enable-workload-management.yml
+- import_playbook: playbooks/14-disable-workload-management.yml
 
+
+#- import_playbook: playbooks/test.yml

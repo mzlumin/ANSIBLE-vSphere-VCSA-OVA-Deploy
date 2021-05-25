@@ -1,0 +1,77 @@
+---
+- hosts: localhost
+  name: Create tags on datastores for TKG 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+    
+    - name: Create TKG category
+      community.vmware.vmware_category:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        category_name: '{{ vsphere_category_name }}'
+        category_description: '{{ vsphere_category_description }}'
+        category_cardinality: 'multiple'
+        state: present
+
+
+
+    - name: Gather info about tag categories
+      community.vmware.vmware_category_info:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+      delegate_to: localhost
+      register: all_tag_category_info
+
+    - name: Gather category id from given tag category
+      community.vmware.vmware_category_info:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+      delegate_to: localhost
+      register: tag_category_results
+
+    - set_fact:
+#        category_id: "{{ item.category_id }}"
+        category_id: "{{ item.category_id }}"
+      loop: "{{ tag_category_results.tag_category_info|json_query(query) }}"
+      vars:
+#        query: "[?category_name==`vSANDirectStorage`]"
+#        query: "[]"
+        query: "[?category_name==`{{ vsphere_category_name }}`]"
+    - debug: var=category_id
+
+    
+    - name: Create  tag
+      community.vmware.vmware_tag:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        #category_id: 'urn:vmomi:InventoryServiceCategory:e785088d-6981-4b1c-9fb8-1100c3e1f742:GLOBAL'
+        category_id: '{{ category_id }}'
+        tag_name: '{{ vsphere_tag_name }}'
+        tag_description: '{{ vsphere_tag_description }}'
+        state: present
+      delegate_to: localhost
+
+    - name: Assign TKG Tags
+      community.vmware.vmware_tag_manager:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        tag_names:
+          - "{{ vsphere_category_name }}:{{ vsphere_tag_name }}"
+            #category: tanzu
+          #- Category_0001:Sample_Tag_0003
+        object_name: '{{ vsphere_assign_tag_object_name }}' #vsanDatastore
+        object_type: '{{ vsphere_assign_tag_object_type }}'  #Datastore
+        state: add
+      delegate_to: localhost

@@ -1,0 +1,146 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Add Host to dVS
+      community.vmware.vmware_dvs_host:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        esxi_hostname: "{{ esxi_infrastructure_fqdn }}" # MANAGEMENT ESXi
+        switch_name: '{{ dvSwitch_name }}'
+        vmnics:
+            #- vmnic0
+            - vmnic2
+            - vmnic3
+        state: present
+      delegate_to: localhost
+
+
+
+    - name: Migrate Management vmk
+      community.vmware.vmware_migrate_vmk:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        esxi_hostname: "{{ esxi_infrastructure_fqdn }}"
+        device: vmk0
+        current_switch_name: vSwitch0
+        current_portgroup_name: Management Network
+        migrate_switch_name: '{{ dvSwitch_name }}'
+        migrate_portgroup_name: vlan-10-MGMT
+      delegate_to: localhost
+
+ #   - name: Migrate Management vmk
+ #     community.vmware.vmware_migrate_vmk:
+ #       validate_certs: no
+ #       hostname: '{{ vcenter_hostname }}.{{ domain }}'
+ #       username: "{{ vcenter_username }}"
+ #       password: "{{ vcenter_password }}"
+ #       esxi_hostname: "{{ esxi_infrastructure_fqdn }}"
+ #       device: vmk1
+ #       current_switch_name: vSwitch0
+ #       current_portgroup_name: Management Network
+ #       migrate_switch_name: '{{ dvSwitch_name }}'
+ #       migrate_portgroup_name: vlan-10-MGMT
+ #     delegate_to: localhost
+
+
+
+    - name: Add Host to dVS
+      community.vmware.vmware_dvs_host:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        esxi_hostname: "{{ esxi_compute_01_fqdn }}"
+        switch_name: '{{ dvSwitch_name }}'
+        vmnics:
+            #- vmnic0
+            - vmnic1
+        state: present
+      delegate_to: localhost
+
+
+
+    - name: Migrate Management vmk
+      community.vmware.vmware_migrate_vmk:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        esxi_hostname: "{{ esxi_compute_01_fqdn }}"
+        device: vmk0
+        current_switch_name: vSwitch0
+        current_portgroup_name: Management Network
+        migrate_switch_name: '{{ dvSwitch_name }}'
+        migrate_portgroup_name: vlan-10-MGMT
+      delegate_to: localhost
+
+
+    - name: Add Host to dVS
+      community.vmware.vmware_dvs_host:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        esxi_hostname: "{{ esxi_compute_02_fqdn }}"
+        switch_name: '{{ dvSwitch_name }}'
+        vmnics:
+            #- vmnic0
+            - vmnic1
+        state: present
+      delegate_to: localhost
+
+
+
+    - name: Migrate Management vmk
+      community.vmware.vmware_migrate_vmk:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        esxi_hostname: "{{ esxi_compute_02_fqdn }}"
+        device: vmk0
+        current_switch_name: vSwitch0
+        current_portgroup_name: Management Network
+        migrate_switch_name: '{{ dvSwitch_name }}'
+        migrate_portgroup_name: vlan-10-MGMT
+      delegate_to: localhost
+
+
+    - name: Add Host to dVS
+      community.vmware.vmware_dvs_host:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        esxi_hostname: "{{ esxi_compute_03_fqdn }}"
+        switch_name: '{{ dvSwitch_name }}'
+        vmnics:
+            - vmnic0
+            - vmnic1
+        state: present
+      delegate_to: localhost
+
+
+
+    - name: Migrate Management vmk
+      community.vmware.vmware_migrate_vmk:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        esxi_hostname: "{{ esxi_compute_03_fqdn }}"
+        device: vmk0
+        current_switch_name: vSwitch0
+        current_portgroup_name: Management Network
+        migrate_switch_name: '{{ dvSwitch_name }}'
+        migrate_portgroup_name: vlan-10-MGMT
+      delegate_to: localhost

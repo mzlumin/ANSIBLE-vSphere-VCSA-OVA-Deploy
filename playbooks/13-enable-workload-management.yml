@@ -1,0 +1,128 @@
+---
+- hosts: localhost
+  name: Create vSphere tag-based storage policy for TKG 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Login to get Session ID
+      uri:
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/session
+        user: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+        method: POST
+        #body: "{{ lookup('file','issue.json') }}"
+        force_basic_auth: yes
+        status_code: 201
+        body_format: json
+      register: this
+
+
+    - name: Get Cluster from VCenter
+      uri:
+        validate_certs: no
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/cluster
+        method: GET
+        return_content: yes
+        headers:
+          vmware-api-session-id: "{{ this.vmware_api_session_id }}"          
+
+
+
+    - name: Get Networks from VCenter
+      uri:
+        validate_certs: no
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/network
+        method: GET
+        return_content: yes
+        headers:
+          vmware-api-session-id: "{{ this.vmware_api_session_id }}"   
+
+    - name: Get Storage Policies from VCenter
+      uri:
+        validate_certs: no
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/storage/policies
+        method: GET
+        return_content: yes
+        headers:
+          vmware-api-session-id: "{{ this.vmware_api_session_id }}"   
+
+
+
+    - name: Get VDS from NSX        # Needed UUID from VDS!
+      uri:
+        url: https://10.0.10.40/api/v1/fabric/virtual-switches
+        user: 'admin'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+        method: GET
+        #body: "{{ lookup('file','issue.json') }}"
+        force_basic_auth: yes
+        status_code: 200
+        body_format: json
+#      register: bla
+
+    - name: Get VDS from NSX        # Needed UUID from VDS!
+      uri:
+        url: https://10.0.10.40/api/v1/edge-clusters
+        user: 'admin'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+        method: GET
+        #body: "{{ lookup('file','issue.json') }}"
+        force_basic_auth: yes
+        status_code: 200
+        body_format: json
+
+
+
+
+    - name: Enable TKG on Cluster
+      uri:
+        validate_certs: no
+#        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/namespace-management/clusters/{{cluster_name_compute}}?action=enable
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/namespace-management/clusters/domain-c1008?action=enable
+        method: POST
+        body_format: json
+        status_code: [204]
+        return_content: true
+        headers:
+          vmware-api-session-id: "{{ this.vmware_api_session_id }}"
+          Content-Type: application/json
+        body: 
+          ephemeral_storage_policy: "1031a289-e08a-483a-9713-574fd0b07238"
+          image_storage:
+            storage_policy: "1031a289-e08a-483a-9713-574fd0b07238"
+          master_management_network:
+            address_range:
+              address_count: 5
+              gateway: "10.0.10.253"
+              starting_address: "10.0.10.190"
+              subnet_mask: "255.255.255.0"
+            mode: "STATICRANGE"
+            network: "dvportgroup-1025"
+          master_DNS:
+            - "10.0.10.253"
+          master_NTP_servers:
+            - "pool.ntp.org"
+          master_storage_policy: "1031a289-e08a-483a-9713-574fd0b07238"
+          network_provider: "NSXT_CONTAINER_PLUGIN"
+          ncp_cluster_network_spec:
+            cluster_distributed_switch: "50 0f ac 8c 54 ff 20 31-ab c9 02 30 f8 3a 25 ef"
+            egress_cidrs:
+              - address: "10.30.20.0"
+                prefix: "24"
+            ingress_cidrs:
+               - address: "10.30.10.0"
+                 prefix: "24"
+            nsx_edge_cluster: "bc7fa4d6-2c5a-4cd3-a133-77b70d374ce7" #"Edge-Cluster-01"
+            pod_cidrs: 
+               - address: "10.244.0.0"
+                 prefix: "21"
+          service_cidr:
+            address: "10.64.96.0"
+            prefix: 24
+          size_hint: "TINY"
+          default_kubernetes_service_content_library: "Tanzu-TKG-Library" 

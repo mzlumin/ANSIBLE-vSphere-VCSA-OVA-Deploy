@@ -6,7 +6,8 @@
 
   tasks:
     - name: Provide information about vCenter
-      vmware_about_info:
+      #vmware_about_info:
+      community.vmware.vmware_about_info:
         hostname: '{{ vcenter_hostname }}.{{ domain }}'
         validate_certs: no
         username: '{{ vcenter_username }}'
@@ -35,7 +36,7 @@
         enable_ha: True
         ha_vm_monitoring: vmMonitoringOnly
         enable_drs: True
-        drs_default_vm_behavior: partiallyAutomated
+        drs_default_vm_behavior: fullyAutomated
       register: cl_result
       delegate_to: localhost
 
@@ -50,7 +51,7 @@
         enable_ha: True
         ha_vm_monitoring: vmMonitoringOnly
         enable_drs: True
-        drs_default_vm_behavior: partiallyAutomated
+        drs_default_vm_behavior: fullyutomated
       register: cl_result
       delegate_to: localhost
 

@@ -1,0 +1,131 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_01_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-04-VMOTION
+         network:
+            type: 'static'
+            ip_address: 10.0.4.36
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.4.253
+            tcpip_stack: vmotion
+         mtu: 9000
+         enable_vmotion: True
+         state: present
+      delegate_to: localhost
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_01_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-08-VSAN
+         network:
+            type: 'static'
+            ip_address: 10.0.8.36
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.8.253
+            #tcpip_stack: vmotion
+         mtu: 9000
+         enable_vsan: True
+         state: present
+      delegate_to: localhost
+
+
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_02_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-04-VMOTION
+         network:
+            type: 'static'
+            ip_address: 10.0.4.37
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.4.253
+            tcpip_stack: vmotion
+         mtu: 9000
+         enable_vmotion: True
+         state: present
+      delegate_to: localhost
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_02_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-08-VSAN
+         network:
+            type: 'static'
+            ip_address: 10.0.8.37
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.8.253
+            #tcpip_stack: vmotion
+         mtu: 9000
+         enable_vsan: True
+         state: present
+      delegate_to: localhost      
+
+
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_03_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-04-VMOTION
+         network:
+            type: 'static'
+            ip_address: 10.0.4.38
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.4.253
+            tcpip_stack: vmotion
+         mtu: 9000
+         enable_vmotion: True
+         state: present
+      delegate_to: localhost
+
+    - name: Add vMotion vmkernel port with vMotion TCP/IP stack
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_03_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-08-VSAN
+         network:
+            type: 'static'
+            ip_address: 10.0.8.38
+            subnet_mask: 255.255.255.0
+            default_gateway: 10.0.8.253
+            #tcpip_stack: vsan
+         mtu: 9000
+         enable_vsan: True
+         state: present
+      delegate_to: localhost      

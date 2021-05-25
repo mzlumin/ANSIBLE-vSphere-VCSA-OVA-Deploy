@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  name: Create vSphere tag-based storage policy for TKG 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Login to get Session ID
+      uri:
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/session
+        user: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs: no
+        method: POST
+        force_basic_auth: yes
+        status_code: 201
+        body_format: json
+      register: this
+
+
+    - name: Disable TKG on Cluster
+      uri:
+        validate_certs: no
+        url: https://{{ vcenter_hostname }}.{{ domain }}/api/vcenter/namespace-management/clusters/domain-c1008?action=disable
+        method: POST
+        return_content: yes
+        status_code: 204
+        headers:
+          vmware-api-session-id: "{{ this.vmware_api_session_id }}"          

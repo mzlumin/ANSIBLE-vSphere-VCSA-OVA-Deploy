@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  name: Create vSphere tag-based storage policy for TKG 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+    
+ # echo | openssl s_client -connect wp-content.vmware.com:443 |& openssl x509 -fingerprint -noout
+
+    - name: Create Subscribed Content Library
+      community.vmware.vmware_content_library_manager:
+        validate_certs: no
+        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        library_name: '{{ content_library_library_name }}'
+        library_description: '{{ content_library_library_description }}'
+        library_type: subscribed
+        datastore_name: '{{ content_library_datastore_name }}'
+        subscription_url: '{{ content_library_subscription_url }}'
+        ssl_thumbprint: '{{ content_library_ssl_thumbprint }}' 
+        update_on_demand: true
+        state: present
+      delegate_to: localhost
+
+

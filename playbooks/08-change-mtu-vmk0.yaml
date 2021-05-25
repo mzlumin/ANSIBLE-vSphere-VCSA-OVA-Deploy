@@ -1,0 +1,21 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Change vmk0 MTU to 9000
+      community.vmware.vmware_vmkernel:
+         validate_certs: no
+         hostname: '{{ vcenter_hostname }}.{{ domain }}'
+         username: '{{ vcenter_username }}'
+         password: '{{ vcenter_password }}'
+         esxi_hostname: "{{ esxi_compute_01_fqdn }}"
+         dvswitch_name: '{{ dvSwitch_name }}'
+         portgroup_name: vlan-10-MGMT
+         device: vmk0
+         mtu: 9000
+         state: present
+      delegate_to: localhost

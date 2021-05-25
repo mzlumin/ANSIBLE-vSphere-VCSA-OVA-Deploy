@@ -1,0 +1,13 @@
+---
+- name: test
+  hosts: localhost
+
+  tasks:
+  - name: Gather vmware host facts
+    community.vmware.vmware_host_facts:
+      validate_certs: no
+      hostname: '10.0.0.200'
+      username: 'root'
+      password: 'ecpwoju1!'
+    register: host_facts
+    delegate_to: localhost

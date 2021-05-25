@@ -1,0 +1,15 @@
+---
+- name: test
+  hosts: localhost
+
+  tasks:
+  - name: Provide information about a standalone ESXi server
+    community.vmware.vmware_about_info:
+      validate_certs: no
+      hostname: '10.0.10.34'
+      username: 'administrator@megasp.net'
+      password: '20Start!Lab20'
+    delegate_to: localhost
+    register: esxi_about_info
+
+

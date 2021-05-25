@@ -5,7 +5,7 @@
   vars_files: ../answerfile.yml
 
   tasks:
-    - vmware_deploy_ovf:
+    - community.vmware.vmware_deploy_ovf:
         hostname: "{{ esxi_ip_address }}"
         username: "{{ esxi_username }}"
         password: "{{ esxi_password }}"
@@ -31,7 +31,7 @@
           guestinfo.cis.vmdir.domain-name: "{{ domain }}"
           guestinfo.cis.vmdir.username: "{{ vcenter_username }}"
           guestinfo.cis.vmdir.password: "{{ vcenter_password }}" # SSO Password for administrator@vsphere.local
-          guestinfo.cis.appliance.ntp.servers: "us.pool.ntp.org"
+          guestinfo.cis.appliance.ntp.servers: "0.at.pool.ntp.org"
           guestinfo.cis.appliance.ssh.enabled: "True"
           domain: "{{ domain }}"
           searchpath: "{{ searchpath }}"
