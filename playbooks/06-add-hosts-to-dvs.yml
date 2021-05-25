@@ -248,6 +248,8 @@
             #- vmnic0
             - vmnic0
             - vmnic1
+            - vmnic2
+            - vmnic3            
         state: present
       delegate_to: localhost
 

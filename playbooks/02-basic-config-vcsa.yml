@@ -33,10 +33,10 @@
         password: '{{ vcenter_password }}'
         datacenter_name: '{{ datacenter_name }}'
         cluster_name: "{{ cluster_name_edge }}"
-        enable_ha: True
-        ha_vm_monitoring: vmMonitoringOnly
-        enable_drs: True
-        drs_default_vm_behavior: fullyAutomated
+        enable_ha: False                                        # Silly, no VM's can run if enabled on single Host CLuster
+#        ha_vm_monitoring: vmMonitoringOnly
+        enable_drs: False
+#        drs_default_vm_behavior: fullyAutomated
       register: cl_result
       delegate_to: localhost
 

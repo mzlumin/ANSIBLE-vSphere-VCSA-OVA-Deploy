@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  name: Add Hosts and licenses to vCenter 
+  gather_facts: false
+  vars_files: ../answerfile.yml
+
+  tasks:
+
+    - name: Gather info about vmhbas of an ESXi Host
+      community.vmware.vmware_host_disk_info:
+#        hostname: '{{ vcenter_hostname }}.{{ domain }}'
+        hostname: '{{ esxi_infrastructure_fqdn }}'        
+        username: 'root' #{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        esxi_hostname: '{{ esxi_infrastructure_fqdn }}'
+        validate_certs: no
+      delegate_to: localhost
+      register: host_vmhbas
+
+#    - debug:
+#        msg: "{{ host_vmhbas.hosts_disk_info }}"
+#        msg: "{{ host_vmhbas.hosts_disk_info|
+#                json_query('[*]')|
+#                first }}"
+
+
+
+    - name: Mount VMFS datastores to ESXi
+      community.vmware.vmware_host_datastore:
+          validate_certs: no
+          hostname: '{{ esxi_infrastructure_fqdn }}'
+          username: 'root'
+          password: '{{ vcenter_password }}'
+          datastore_name: "Datastore" #'{{ item.name }}'
+          datastore_type: 'vmfs' #'{{ item.type }}'
+          vmfs_device_name: 'mpx.vmhba1:C0:T2:L0'  # "canonical_name": "mpx.vmhba1:C0:T2:L0"
+          vmfs_version: 6
+          esxi_hostname: '{{ inventory_hostname }}'
+          state: present
+      delegate_to: localhost      
