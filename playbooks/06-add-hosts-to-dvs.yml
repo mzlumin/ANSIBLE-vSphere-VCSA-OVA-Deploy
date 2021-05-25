@@ -124,7 +124,7 @@
         esxi_hostname: "{{ esxi_compute_03_fqdn }}"
         switch_name: '{{ dvSwitch_name }}'
         vmnics:
-            - vmnic0
+          #  - vmnic0
             - vmnic1
         state: present
       delegate_to: localhost
